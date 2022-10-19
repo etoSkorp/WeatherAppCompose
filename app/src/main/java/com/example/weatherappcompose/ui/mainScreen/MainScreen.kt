@@ -12,6 +12,7 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -23,8 +24,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.weatherappcompose.DataEvent
 import com.example.weatherappcompose.R
-import com.example.weatherappcompose.domain.DayModel
-import com.example.weatherappcompose.domain.WeatherModel
 import com.example.weatherappcompose.ui.WeatherViewModel
 import com.example.weatherappcompose.ui.theme.GreyNight
 import com.example.weatherappcompose.ui.theme.GreyNightSecond
@@ -35,12 +34,16 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.getViewModel
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun Header(curWeather: MutableState<WeatherModel>, viewModel: WeatherViewModel) {
+fun Header(
+    viewModel: WeatherViewModel = getViewModel()
+) {
+    val viewState = viewModel.viewState.observeAsState()
 
     val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
     val coroutineScope = rememberCoroutineScope()
@@ -70,7 +73,7 @@ fun Header(curWeather: MutableState<WeatherModel>, viewModel: WeatherViewModel) 
     ) {
         Box(modifier = Modifier.fillMaxHeight(0.6F)) {
             Image(
-                painter = painterResource(id = if (curWeather.value.isDay == 1) R.drawable.day else R.drawable.night),
+                painter = painterResource(id = if (viewState.value!!.weatherList.isDay == 1) R.drawable.day else R.drawable.night),
                 contentDescription = "daytime",
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.FillHeight
@@ -87,12 +90,12 @@ fun Header(curWeather: MutableState<WeatherModel>, viewModel: WeatherViewModel) 
                     color = GreyNightSecond
                 )
                 Text(
-                    text = "${curWeather.value.curTemp.toInt()}°",
+                    text = "${viewState.value!!.weatherList.curTemp.toInt()}°",
                     style = TextStyle(fontSize = 72.sp, fontFamily = FontFamily.Serif),
                     color = GreyNightSecond
                 )
                 Text(
-                    text = curWeather.value.curCondition,
+                    text = viewState.value!!.weatherList.curCondition,
                     style = TextStyle(fontSize = 16.sp, fontFamily = FontFamily.Serif),
                     color = GreyNightSecond
                 )
@@ -118,14 +121,14 @@ fun Header(curWeather: MutableState<WeatherModel>, viewModel: WeatherViewModel) 
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = curWeather.value.city,
+                    text = viewState.value!!.weatherList.city,
                     style = TextStyle(fontSize = 24.sp, fontFamily = FontFamily.Serif),
-                    color = if (curWeather.value.isDay == 1) LightBlueDay else GreyNight
+                    color = if (viewState.value!!.weatherList.isDay == 1) LightBlueDay else GreyNight
                 )
                 Text(
-                    text = curWeather.value.country,
+                    text = viewState.value!!.weatherList.country,
                     style = TextStyle(fontSize = 20.sp, fontFamily = FontFamily.Serif),
-                    color = if (curWeather.value.isDay == 1) LightBlueDay else GreyNight
+                    color = if (viewState.value!!.weatherList.isDay == 1) LightBlueDay else GreyNight
                 )
             }
             Image(
@@ -143,7 +146,10 @@ fun Header(curWeather: MutableState<WeatherModel>, viewModel: WeatherViewModel) 
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TabLayout(daysList: MutableState<List<DayModel>>, isDay: Int) {
+fun TabLayout(
+    viewModel: WeatherViewModel = getViewModel()
+) {
+    val viewState = viewModel.viewState.observeAsState()
 
     val tabList = listOf("Today", "Tomorrow")
     val pagerState = rememberPagerState()
@@ -156,7 +162,7 @@ fun TabLayout(daysList: MutableState<List<DayModel>>, isDay: Int) {
             indicator = {
                 TabRowDefaults.Indicator(
                     modifier = Modifier.pagerTabIndicatorOffset(pagerState, it),
-                    color = if (isDay == 1) LightBlueDay else GreyNight
+                    color = if (viewState.value!!.weatherList.isDay == 1) LightBlueDay else GreyNight
                 )
             },
             backgroundColor = Color.Transparent,
@@ -187,12 +193,12 @@ fun TabLayout(daysList: MutableState<List<DayModel>>, isDay: Int) {
                 .weight(1.0f)
                 .padding(top = 10.dp)
         ) { dayIndex ->
-            if (daysList.value.isNotEmpty()) {
+            if (viewState.value!!.daysList.isNotEmpty()) {
                 LazyRow(
                     modifier = Modifier.fillMaxSize()
                 ) {
                     itemsIndexed(
-                        daysList.value[dayIndex].hourList
+                        viewState.value!!.daysList[dayIndex].hourList
                     ) { hourIndex, item ->
                         TabItem(item)
                     }
