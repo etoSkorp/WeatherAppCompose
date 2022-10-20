@@ -1,6 +1,7 @@
 package com.example.weatherappcompose.ui
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.weatherappcompose.DataEvent
 import com.example.weatherappcompose.UIEvent
@@ -10,7 +11,10 @@ import com.example.weatherappcompose.base.Event
 import com.example.weatherappcompose.domain.WeatherModel
 import kotlinx.coroutines.launch
 
-class WeatherViewModel(private val weatherInteractor: WeatherInteractor) :
+class WeatherViewModel(
+    private val savedState: SavedStateHandle,
+    private val weatherInteractor: WeatherInteractor
+    ) :
     BaseViewModel<ViewState>() {
 
     init {
@@ -82,7 +86,7 @@ class WeatherViewModel(private val weatherInteractor: WeatherInteractor) :
                             Log.e("ERROR", it.localizedMessage)
                         },
                         onSuccess = {
-                            processDataEvent(DataEvent.OnLoadWeatherWithChosenCitySucceed(it))
+                            processDataEvent(DataEvent.OnLoadWeatherSucceed(it))
                         }
                     )
                 }

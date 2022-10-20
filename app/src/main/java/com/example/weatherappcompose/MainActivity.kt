@@ -3,16 +3,15 @@ package com.example.weatherappcompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.runtime.remember
-import androidx.navigation.NavBackStackEntry
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.weatherappcompose.navigation.Actions
 import com.example.weatherappcompose.navigation.Destination
+import com.example.weatherappcompose.ui.WeatherViewModel
 import com.example.weatherappcompose.ui.mainScreen.MainScreen
 import com.example.weatherappcompose.ui.searchScreen.SearchScreen
+import org.koin.androidx.compose.getViewModel
 
 class MainActivity() : ComponentActivity() {
 
@@ -22,15 +21,26 @@ class MainActivity() : ComponentActivity() {
         setContent {
 
             val navController = rememberNavController()
-            val actions = remember(navController) { Actions(navController) }
+
+            val viewModel: WeatherViewModel = getViewModel()
+            val viewState = viewModel.viewState.observeAsState()
 
             NavHost(navController = navController, startDestination = Destination.MainScreen) {
-//                navController.currentDestination?.let {
-//                    NavBackStackEntry.create(this@MainActivity,
-//                        it)
-//                }
-                composable(Destination.MainScreen) { MainScreen(actions.openSearchScreen) }
-                composable(Destination.SearchScreen) { SearchScreen(actions.openMainScreen) }
+                composable(Destination.MainScreen) {
+                    MainScreen(
+                        viewState.value!!,
+                        onNavigateToSearchScreen = { navController.navigate(Destination.SearchScreen) },
+                        onRefreshButtonClicked = { viewModel.processDataEvent(DataEvent.LoadWeather) }
+                    )
+                }
+                composable(Destination.SearchScreen) {
+                    SearchScreen(
+                        viewState.value!!,
+                        onNavigateToMainScreen = { navController.navigate(Destination.MainScreen) },
+                        onClickedCityItemCallback = { viewModel.processUIEvent(UIEvent.OnClickedCityItem(it)) },
+                        onEnteredCharOnSearchTextCallback = { viewModel.processUIEvent(UIEvent.EnteredCharOnSearchText(it)) }
+                    )
+                }
             }
         }
     }

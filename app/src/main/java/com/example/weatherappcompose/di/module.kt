@@ -1,5 +1,6 @@
 package com.example.weatherappcompose.di
 
+import androidx.lifecycle.SavedStateHandle
 import com.example.weatherappcompose.BASE_URL
 import com.example.weatherappcompose.data.SearchApi
 import com.example.weatherappcompose.data.WeatherApi
@@ -37,5 +38,5 @@ val weatherModule = module {
 
     single<WeatherInteractor> { WeatherInteractor(weatherRepo = get<WeatherRepo>()) }
 
-    viewModel<WeatherViewModel> { WeatherViewModel(get<WeatherInteractor>())}
+    viewModel<WeatherViewModel> { WeatherViewModel(SavedStateHandle(), get<WeatherInteractor>())}
 }

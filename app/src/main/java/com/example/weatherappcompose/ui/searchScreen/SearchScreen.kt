@@ -15,20 +15,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.weatherappcompose.UIEvent
+import com.example.weatherappcompose.ViewState
 import com.example.weatherappcompose.ui.WeatherViewModel
 import org.koin.androidx.compose.getViewModel
 
 @Composable
 fun SearchScreen(
-    openMainScreen: () -> Unit,
-    viewModel: WeatherViewModel = getViewModel()
+    viewState: ViewState,
+    onNavigateToMainScreen: () -> Unit,
+    onClickedCityItemCallback: (cityName: String) -> Unit,
+    onEnteredCharOnSearchTextCallback: (text: String) -> Unit
 ) {
-    val viewState = viewModel.viewState.observeAsState()
     var text by remember { mutableStateOf("") }
 
     val onClickedCityItem = { cityName: String ->
-        viewModel.processUIEvent(UIEvent.OnClickedCityItem(cityName))
-        openMainScreen.invoke()
+        onNavigateToMainScreen()
+        onClickedCityItemCallback(cityName)
     }
 
     Column(
@@ -36,7 +38,7 @@ fun SearchScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
-            onClick = openMainScreen,
+            onClick = onNavigateToMainScreen,
             modifier = Modifier.padding(top = 8.dp)
         ) {
             Text(
@@ -47,7 +49,7 @@ fun SearchScreen(
             value = text,
             onValueChange = {
                 text = it
-                viewModel.processUIEvent(UIEvent.EnteredCharOnSearchText(text))
+                onEnteredCharOnSearchTextCallback(text)
             },
             modifier = Modifier.padding(16.dp),
         )
@@ -57,7 +59,7 @@ fun SearchScreen(
                 .padding(8.dp)
         ) {
             itemsIndexed(
-                viewState.value!!.cityNameList
+                viewState.cityNameList
             ) { index, item ->
                 SearchItem(
                     item = item,

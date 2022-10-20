@@ -10,7 +10,7 @@ object Destination {
     const val SearchScreen = "SearchScreen"
 }
 
-class Actions(navController: NavHostController) {
-    val openMainScreen: () -> Unit = { navController.navigate(MainScreen) }
-    val openSearchScreen: () -> Unit = { navController.navigate(SearchScreen) }
-}
+//class Actions(navController: NavHostController) {
+//    val openMainScreen: () -> Unit = { navController.navigate(MainScreen) }
+//    val openSearchScreen: () -> Unit = { navController.navigate(SearchScreen) }
+//}

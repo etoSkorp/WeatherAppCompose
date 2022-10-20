@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.weatherappcompose.DataEvent
 import com.example.weatherappcompose.R
+import com.example.weatherappcompose.ViewState
 import com.example.weatherappcompose.ui.WeatherViewModel
 import com.example.weatherappcompose.ui.theme.GreyNight
 import com.example.weatherappcompose.ui.theme.GreyNightSecond
@@ -42,11 +43,11 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainScreen(
-    openSearchScreen: () -> Unit,
-    viewModel: WeatherViewModel = getViewModel()
-) {
-    val viewState = viewModel.viewState.observeAsState()
+    viewState: ViewState,
+    onNavigateToSearchScreen: () -> Unit,
+    onRefreshButtonClicked: () -> Unit
 
+) {
     val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")
     val coroutineScope = rememberCoroutineScope()
     val localTime = remember { mutableStateOf("") }
@@ -74,22 +75,18 @@ fun MainScreen(
     Column() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(color = WhiteMain)
+            modifier = Modifier.fillMaxWidth().background(color = WhiteMain)
         ) {
             Box(modifier = Modifier.fillMaxHeight(0.6F)) {
                 Image(
-                    painter = painterResource(id = if (viewState.value!!.currentWeather.isDay == 1) R.drawable.day else R.drawable.night),
+                    painter = painterResource(id = if (viewState.currentWeather.isDay == 1) R.drawable.day else R.drawable.night),
                     contentDescription = "daytime",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.FillHeight
                 )
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 40.dp)
+                    modifier = Modifier.fillMaxWidth().padding(top = 40.dp)
                 ) {
                     Text(
                         text = getLocalTime(),
@@ -97,21 +94,19 @@ fun MainScreen(
                         color = GreyNightSecond
                     )
                     Text(
-                        text = "${viewState.value!!.currentWeather.curTemp.toInt()}°",
+                        text = "${viewState.currentWeather.curTemp.toInt()}°",
                         style = TextStyle(fontSize = 72.sp, fontFamily = FontFamily.Serif),
                         color = GreyNightSecond
                     )
                     Text(
-                        text = viewState.value!!.currentWeather.curCondition,
+                        text = viewState.currentWeather.curCondition,
                         style = TextStyle(fontSize = 16.sp, fontFamily = FontFamily.Serif),
                         color = GreyNightSecond
                     )
                 }
             }
             Row(
-                modifier = Modifier
-                    .padding(horizontal = 20.dp)
-                    .fillMaxWidth(),
+                modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -120,22 +115,20 @@ fun MainScreen(
                     contentDescription = "search",
                     modifier = Modifier
                         .size(32.dp)
-                        .clickable(
-                            onClick = openSearchScreen
-                        )
+                        .clickable { onNavigateToSearchScreen() }
                 )
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
-                        text = viewState.value!!.currentWeather.city,
+                        text = viewState.currentWeather.city,
                         style = TextStyle(fontSize = 24.sp, fontFamily = FontFamily.Serif),
-                        color = if (viewState.value!!.currentWeather.isDay == 1) LightBlueDay else GreyNight
+                        color = if (viewState.currentWeather.isDay == 1) LightBlueDay else GreyNight
                     )
                     Text(
-                        text = viewState.value!!.currentWeather.country,
+                        text = viewState.currentWeather.country,
                         style = TextStyle(fontSize = 20.sp, fontFamily = FontFamily.Serif),
-                        color = if (viewState.value!!.currentWeather.isDay == 1) LightBlueDay else GreyNight
+                        color = if (viewState.currentWeather.isDay == 1) LightBlueDay else GreyNight
                     )
                 }
                 Image(
@@ -144,7 +137,8 @@ fun MainScreen(
                     modifier = Modifier
                         .size(26.dp)
                         .clickable {
-                            viewModel.processDataEvent(DataEvent.LoadWeather)
+                            onRefreshButtonClicked()
+
                         }
                 )
             }
@@ -156,7 +150,7 @@ fun MainScreen(
                 indicator = {
                     TabRowDefaults.Indicator(
                         modifier = Modifier.pagerTabIndicatorOffset(pagerState, it),
-                        color = if (viewState.value!!.currentWeather.isDay == 1) LightBlueDay else GreyNight
+                        color = if (viewState.currentWeather.isDay == 1) LightBlueDay else GreyNight
                     )
                 },
                 backgroundColor = Color.Transparent,
@@ -187,12 +181,12 @@ fun MainScreen(
                     .weight(1.0f)
                     .padding(top = 10.dp)
             ) { dayIndex ->
-                if (viewState.value!!.daysList.isNotEmpty()) {
+                if (viewState.daysList.isNotEmpty()) {
                     LazyRow(
                         modifier = Modifier.fillMaxSize()
                     ) {
                         itemsIndexed(
-                            viewState.value!!.daysList[dayIndex].hourList
+                            viewState.daysList[dayIndex].hourList
                         ) { hourIndex, item ->
                             TabItem(item)
                         }
