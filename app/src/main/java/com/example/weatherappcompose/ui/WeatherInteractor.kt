@@ -5,16 +5,16 @@ import com.example.weatherappcompose.data.WeatherRepo
 import com.example.weatherappcompose.data.toDomain
 import com.example.weatherappcompose.domain.DayModel
 import com.example.weatherappcompose.domain.HourModel
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class WeatherInteractor(private val weatherRepo: WeatherRepo) {
 
-    suspend fun getWeather() = attempt { weatherRepo.getWeather().toDomain() }
+    suspend fun getWeather(cityName: String) = attempt { weatherRepo.getWeather(cityName).toDomain() }
 
-    suspend fun getDaysList() : List<DayModel> {
+    suspend fun getCityName(cityName: String) = attempt { weatherRepo.getCityName(cityName).map { it.toDomain() } }
+
+    suspend fun getDaysList(city: String) : List<DayModel> {
         val dayList = mutableListOf<DayModel>() // 3 элемента [0, 1, 2] (текущий день и 2 следующих)
-        val forecastday = weatherRepo.getWeather().forecast.forecastday
+        val forecastday = weatherRepo.getWeather(city).forecast.forecastday
 
         for (i in forecastday.indices) {
             val item = forecastday[i] // item - индекс дня (сегодня, завтра, послезавтра)

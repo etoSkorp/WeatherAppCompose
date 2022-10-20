@@ -1,19 +1,25 @@
 package com.example.weatherappcompose
 
 import com.example.weatherappcompose.base.Event
+import com.example.weatherappcompose.domain.CityModel
 import com.example.weatherappcompose.domain.DayModel
 import com.example.weatherappcompose.domain.WeatherModel
 
 data class ViewState(
-    val weatherList: WeatherModel,
-    val daysList: List<DayModel>
+    val currentWeather: WeatherModel,
+    val daysList: List<DayModel>,
+    val cityNameList: List<CityModel>
 )
 
 sealed class DataEvent : Event {
     object LoadWeather : DataEvent()
     data class OnLoadWeatherSucceed(val weatherModel: WeatherModel) : DataEvent()
+    data class OnEnteredCharOnSearchTextLoadSucceed(val cityList: List<CityModel>) : DataEvent()
+    data class OnLoadWeatherWithChosenCitySucceed(val weatherModel: WeatherModel) : DataEvent()
 }
 
 sealed class UIEvent : Event {
-    object RefreshScreen : UIEvent()
+    object RefreshMainScreen : UIEvent()
+    data class EnteredCharOnSearchText(val cityName: String) : UIEvent() // Пользователь ввел любой символ в строке поиска
+    data class OnClickedCityItem(val cityName: String) : UIEvent() // Пользователь нажал на определенный город из списка
 }

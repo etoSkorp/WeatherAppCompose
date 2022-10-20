@@ -1,19 +1,18 @@
 package com.example.weatherappcompose.data
 
 import com.example.weatherappcompose.API_KEY
+import com.example.weatherappcompose.data.model.CityRemoteModel
 import com.example.weatherappcompose.data.model.WeatherRemoteModel
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Query
 
-interface WeatherApi {
+interface SearchApi {
 
-    @GET("forecast.json")
+    @GET("search.json")
     @Headers("Content-type: application/json")
-    suspend fun getWeather(
+    suspend fun getCityName(
         @Query("key") apiKey: String = API_KEY,
-        @Query("q") city: String,
-        @Query("days") days: String = "2",
-        @Query("lang") language: String = "ru"
-    ): WeatherRemoteModel
+        @Query("q") cityName: String
+    ): List<CityRemoteModel>
 }

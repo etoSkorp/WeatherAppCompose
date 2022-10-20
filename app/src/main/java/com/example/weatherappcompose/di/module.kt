@@ -1,6 +1,7 @@
 package com.example.weatherappcompose.di
 
 import com.example.weatherappcompose.BASE_URL
+import com.example.weatherappcompose.data.SearchApi
 import com.example.weatherappcompose.data.WeatherApi
 import com.example.weatherappcompose.data.WeatherRepo
 import com.example.weatherappcompose.data.WeatherRepoImpl
@@ -30,7 +31,9 @@ val weatherModule = module {
 
     single<WeatherApi> { get<Retrofit>().create(WeatherApi::class.java) }
 
-    single<WeatherRepo> { WeatherRepoImpl(get<WeatherApi>()) }
+    single<SearchApi> { get<Retrofit>().create(SearchApi::class.java) }
+
+    single<WeatherRepo> { WeatherRepoImpl(get<WeatherApi>(), get<SearchApi>()) }
 
     single<WeatherInteractor> { WeatherInteractor(weatherRepo = get<WeatherRepo>()) }
 
