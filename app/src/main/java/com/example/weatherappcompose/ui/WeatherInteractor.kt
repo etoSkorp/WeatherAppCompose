@@ -26,6 +26,7 @@ class WeatherInteractor(private val weatherRepo: WeatherRepo) {
                     HourModel(
                         time = hour[j].time,
                         hourCurTemp = hour[j].hourCurTemp,
+                        hourIsDay = hour[j].hourIsDay,
                         hourCondition = hour[j].hourCondition.hourCondition,
                         hourIcon = hour[j].hourCondition.hourIcon,
                         hourWindKph = hour[j].hourWindKph

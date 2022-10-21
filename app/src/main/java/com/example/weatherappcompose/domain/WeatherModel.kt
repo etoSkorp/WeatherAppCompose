@@ -30,6 +30,7 @@ data class HourModel(
     // Погода по часам
     val time: String, // Время по часам (time)
     val hourCurTemp: Float, // Температура в текущий час в переменной time
+    val hourIsDay: Int, // 1 - после рассвета (день), 0 - после заката (ночь)
     val hourCondition: String, // Погодные условия в текущий час в переменной time
     val hourIcon: String, // Иконка в текущий час в переменной time
     val hourWindKph: Float // Скорость верта в текущий час в переменной time

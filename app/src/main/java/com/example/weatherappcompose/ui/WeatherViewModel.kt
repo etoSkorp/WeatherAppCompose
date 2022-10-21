@@ -12,7 +12,6 @@ import com.example.weatherappcompose.domain.WeatherModel
 import kotlinx.coroutines.launch
 
 class WeatherViewModel(
-    private val savedState: SavedStateHandle,
     private val weatherInteractor: WeatherInteractor
     ) :
     BaseViewModel<ViewState>() {

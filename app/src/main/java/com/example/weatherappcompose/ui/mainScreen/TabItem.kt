@@ -1,5 +1,7 @@
 package com.example.weatherappcompose.ui.mainScreen
 
+import android.content.Context
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -9,15 +11,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.weatherappcompose.R
-import com.example.weatherappcompose.domain.DayModel
 import com.example.weatherappcompose.domain.HourModel
 
 @Composable
 fun TabItem(item: HourModel) {
+
+    val context = LocalContext.current
+
+    @DrawableRes
+    fun getDrawableResID(context: Context): Int {
+        val iconToInt = item.hourIcon.substringAfterLast("/").substringBefore(".")
+        val isDayDrawableId = if (item.hourIsDay == 1) "day$iconToInt" else "night$iconToInt"
+        return context.resources.getIdentifier(isDayDrawableId, "drawable", context.packageName)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxHeight()
@@ -34,7 +46,7 @@ fun TabItem(item: HourModel) {
         ) {
             // Иконка погоды
             Image(
-                painter = painterResource(id = R.drawable.night100x100),
+                painter = painterResource(id = getDrawableResID(context)),
                 contentDescription = "weather",
                 modifier = Modifier.size(60.dp)
             )

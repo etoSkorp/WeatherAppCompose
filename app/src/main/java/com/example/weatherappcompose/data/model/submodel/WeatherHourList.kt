@@ -7,6 +7,8 @@ data class WeatherHourList(
     val time: String,
     @SerializedName("temp_c")
     val hourCurTemp: Float,
+    @SerializedName("is_day")
+    val hourIsDay: Int,
     @SerializedName("condition")
     val hourCondition: WeatherHourCondition,
     @SerializedName("wind_kph")

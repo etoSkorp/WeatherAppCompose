@@ -38,5 +38,5 @@ val weatherModule = module {
 
     single<WeatherInteractor> { WeatherInteractor(weatherRepo = get<WeatherRepo>()) }
 
-    viewModel<WeatherViewModel> { WeatherViewModel(SavedStateHandle(), get<WeatherInteractor>())}
+    viewModel<WeatherViewModel> { WeatherViewModel(get<WeatherInteractor>())}
 }

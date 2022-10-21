@@ -12,7 +12,6 @@ import androidx.compose.material.TabRow
 import androidx.compose.material.TabRowDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,10 +21,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.weatherappcompose.DataEvent
 import com.example.weatherappcompose.R
 import com.example.weatherappcompose.ViewState
-import com.example.weatherappcompose.ui.WeatherViewModel
 import com.example.weatherappcompose.ui.theme.GreyNight
 import com.example.weatherappcompose.ui.theme.GreyNightSecond
 import com.example.weatherappcompose.ui.theme.LightBlueDay
@@ -35,7 +32,6 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
-import org.koin.androidx.compose.getViewModel
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -52,7 +48,7 @@ fun MainScreen(
     val coroutineScope = rememberCoroutineScope()
     val localTime = remember { mutableStateOf("") }
 
-    val tabList = listOf("Today", "Tomorrow")
+    val tabList = listOf("Сегодня", "Завтра")
     val pagerState = rememberPagerState()
     val tabIndex = pagerState.currentPage
 
@@ -144,6 +140,7 @@ fun MainScreen(
             }
         }
 
+        // TabRow with RecyclerView
         Column(modifier = Modifier.background(color = WhiteMain)) {
             TabRow(
                 selectedTabIndex = tabIndex,
@@ -168,7 +165,8 @@ fun MainScreen(
                             Text(
                                 text = item,
                                 color = GreyNightSecond,
-                                fontFamily = FontFamily.Serif
+                                fontFamily = FontFamily.Serif,
+                                fontSize = 15.sp
                             )
                         }
                     )
