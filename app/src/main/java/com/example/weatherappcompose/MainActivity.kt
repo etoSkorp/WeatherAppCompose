@@ -38,7 +38,8 @@ class MainActivity() : ComponentActivity() {
                         viewState.value!!,
                         onNavigateToMainScreen = { navController.navigate(Destination.MainScreen) },
                         onClickedCityItemCallback = { viewModel.processUIEvent(UIEvent.OnClickedCityItem(it)) },
-                        onEnteredCharOnSearchTextCallback = { viewModel.processUIEvent(UIEvent.EnteredCharOnSearchText(it)) }
+                        onEnteredCharOnSearchTextCallback = { viewModel.processUIEvent(UIEvent.EnteredCharOnSearchText(it)) },
+                        clearTabItemInSearchScreen = { viewModel.processUIEvent(UIEvent.ClearTabItemInSearchScreen) }
                     )
                 }
             }

@@ -1,7 +1,6 @@
 package com.example.weatherappcompose.ui
 
 import android.util.Log
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.example.weatherappcompose.DataEvent
 import com.example.weatherappcompose.UIEvent
@@ -66,7 +65,6 @@ class WeatherViewModel(
                             Log.e("ERROR", it.localizedMessage)
                         },
                         onSuccess = {
-                            Log.e("myLog", "${event.cityName} --- $it")
                             processDataEvent(DataEvent.OnEnteredCharOnSearchTextLoadSucceed(it))
                         }
                     )
@@ -93,12 +91,15 @@ class WeatherViewModel(
             }
             is DataEvent.OnLoadWeatherWithChosenCitySucceed -> {
                 val list = weatherInteractor.getDaysList(event.weatherModel.city)
-                Log.e("qweasd", event.weatherModel.city)
-                Log.e("qweasd", event.weatherModel.toString())
 
                 return previousState.copy(
                     currentWeather = event.weatherModel,
                     daysList = list
+                )
+            }
+            is UIEvent.ClearTabItemInSearchScreen -> {
+                return previousState.copy(
+                    cityNameList = emptyList()
                 )
             }
             else -> return null

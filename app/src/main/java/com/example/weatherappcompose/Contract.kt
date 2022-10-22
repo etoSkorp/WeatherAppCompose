@@ -20,6 +20,7 @@ sealed class DataEvent : Event {
 
 sealed class UIEvent : Event {
     object RefreshMainScreen : UIEvent() // Unused for now
+    object ClearTabItemInSearchScreen: UIEvent()
     data class EnteredCharOnSearchText(val cityName: String) : UIEvent() // Пользователь ввел любой символ в строке поиска
     data class OnClickedCityItem(val cityName: String) : UIEvent() // Пользователь нажал на определенный город из списка
 }
