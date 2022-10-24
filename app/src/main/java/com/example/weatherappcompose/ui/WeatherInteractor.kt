@@ -1,5 +1,6 @@
 package com.example.weatherappcompose.ui
 
+import android.icu.text.SimpleDateFormat
 import com.example.weatherappcompose.base.attempt
 import com.example.weatherappcompose.data.WeatherRepo
 import com.example.weatherappcompose.data.toDomain
@@ -42,8 +43,8 @@ class WeatherInteractor(private val weatherRepo: WeatherRepo) {
                     maxWindKph = item.day.maxWindKph,
                     dayCondition = item.day.dayCondition.dayCondition,
                     dayIcon = item.day.dayCondition.dayIcon,
-                    sunrise = item.astro.sunrise,
-                    sunset = item.astro.sunset,
+                    sunrise = SimpleDateFormat("HH:mm").format(SimpleDateFormat("hh:mm a").parse(item.astro.sunrise)),
+                    sunset = SimpleDateFormat("HH:mm").format(SimpleDateFormat("hh:mm a").parse(item.astro.sunset)),
                     hourList = hourList
                 )
             )

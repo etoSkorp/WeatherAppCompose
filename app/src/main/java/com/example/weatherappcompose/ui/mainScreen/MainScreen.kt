@@ -53,12 +53,15 @@ fun MainScreen(
     val tabIndex = pagerState.currentPage
 
     @Composable
-    fun getLocalTime() : String {
+    fun getLocalTime(): String {
         coroutineScope.launch {
-            val timer = object: CountDownTimer(1000, 1000) {
+            val timer = object : CountDownTimer(1000, 1000) {
                 override fun onTick(millisUntilFinished: Long) {
-                    localTime.value = ZonedDateTime.now(ZoneId.of("Europe/Moscow")).format(formatter)
+                    localTime.value =
+                        ZonedDateTime.now(ZoneId.of(viewState.currentWeather.timeZone))
+                            .format(formatter)
                 }
+
                 override fun onFinish() {
                     start()
                 }
@@ -71,7 +74,9 @@ fun MainScreen(
     Column() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth().background(color = WhiteMain)
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(color = WhiteMain)
         ) {
             Box(modifier = Modifier.fillMaxHeight(0.6F)) {
                 Image(
@@ -82,18 +87,48 @@ fun MainScreen(
                 )
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth().padding(top = 40.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 40.dp)
                 ) {
                     Text(
-                        text = getLocalTime(),
+                        text = if (viewState.currentWeather.timeZone.isNotEmpty()) getLocalTime() else "",
                         style = TextStyle(fontSize = 14.sp, fontFamily = FontFamily.Serif),
                         color = GreyNightSecond
                     )
-                    Text(
-                        text = "${viewState.currentWeather.curTemp.toInt()}°",
-                        style = TextStyle(fontSize = 72.sp, fontFamily = FontFamily.Serif),
-                        color = GreyNightSecond
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.sunrise100x100),
+                                contentDescription = "sunrise",
+                                modifier = Modifier.size(56.dp)
+                            )
+                            Text(text = if (viewState.daysList.isNotEmpty()) viewState.daysList[0].sunrise else "")
+                        }
+                        Text(
+                            text = "${viewState.currentWeather.curTemp.toInt()}°",
+                            style = TextStyle(fontSize = 72.sp, fontFamily = FontFamily.Serif),
+                            color = GreyNightSecond
+                        )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.sunset100x100),
+                                contentDescription = "sunset",
+                                modifier = Modifier.size(56.dp)
+                            )
+                            Text(text = if (viewState.daysList.isNotEmpty()) viewState.daysList[0].sunset else "")
+                        }
+                    }
                     Text(
                         text = viewState.currentWeather.curCondition,
                         style = TextStyle(fontSize = 16.sp, fontFamily = FontFamily.Serif),
@@ -102,7 +137,9 @@ fun MainScreen(
                 }
             }
             Row(
-                modifier = Modifier.padding(horizontal = 20.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(horizontal = 20.dp)
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

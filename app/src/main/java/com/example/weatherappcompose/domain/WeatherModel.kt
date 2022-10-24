@@ -3,7 +3,7 @@ package com.example.weatherappcompose.domain
 data class WeatherModel(
     val city: String, // Город (name)
     val country: String, // Страна (country)
-    val localTime: String, // Текущее время
+    val timeZone: String, // Time zone для класса ZonedDateTime
 
     // Погода в текущий день
     val curTemp: Float, // Текущая температура воздуха по цельсию (temp_c)

@@ -8,7 +8,7 @@ import com.example.weatherappcompose.domain.WeatherModel
 fun WeatherRemoteModel.toDomain() = WeatherModel(
     city = location.name,
     country = location.country,
-    localTime = location.localTime,
+    timeZone = location.timeZone,
 
     curTemp = current.curTemp,
     isDay = current.isDay,

@@ -10,20 +10,13 @@ import com.example.weatherappcompose.base.Event
 import com.example.weatherappcompose.domain.WeatherModel
 import kotlinx.coroutines.launch
 
-class WeatherViewModel(
-    private val weatherInteractor: WeatherInteractor
-    ) :
-    BaseViewModel<ViewState>() {
-
-    init {
-        processDataEvent(DataEvent.LoadWeather)
-    }
+class WeatherViewModel(private val weatherInteractor: WeatherInteractor) : BaseViewModel<ViewState>() {
 
     override fun initialViewState(): ViewState = ViewState(
         currentWeather = WeatherModel(
-            city = "Волжский",
+            city = "",
             country = "",
-            localTime = "",
+            timeZone = "",
             curTemp = 0F,
             isDay = 1,
             curCondition = "",
@@ -39,7 +32,7 @@ class WeatherViewModel(
         when (event) {
             is DataEvent.LoadWeather -> {
                 viewModelScope.launch {
-                    weatherInteractor.getWeather(previousState.currentWeather.city).fold(
+                    weatherInteractor.getWeather(event.city).fold(
                         onError = {
                             Log.e("ERROR", it.localizedMessage)
                         },

@@ -12,7 +12,7 @@ data class ViewState(
 )
 
 sealed class DataEvent : Event {
-    object LoadWeather : DataEvent()
+    data class LoadWeather(val city: String) : DataEvent()
     data class OnLoadWeatherSucceed(val weatherModel: WeatherModel) : DataEvent()
     data class OnEnteredCharOnSearchTextLoadSucceed(val cityList: List<CityModel>) : DataEvent()
     data class OnLoadWeatherWithChosenCitySucceed(val weatherModel: WeatherModel) : DataEvent()
